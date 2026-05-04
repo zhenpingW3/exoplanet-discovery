@@ -402,22 +402,14 @@
         </div>
 
         <div class="footer">
-            <p>Data source: <a href="https://exoplanetarchive.ipac.caltech.edu/" target="_blank">NASA Exoplanet Archive</a> (1,174 planets discovered 2002-2025)</p>
+            <p>Data source: <a href="https://exoplanetarchive.ipac.caltech.edu/" target="_blank" rel="noopener">NASA Exoplanet Archive</a> (1,174 planets discovered 2002-2025)</p>
             <p>Habitable zone: ~250–350K (Earth-sized planets with potential for liquid water)</p>
         </div>
     </div>
 
     <script>
-        let vizData = {};
-
-        // Load data from JSON file
-        fetch('data.json')
-            .then(response => response.json())
-            .then(data => {
-                vizData = data;
-                initializeVisualization();
-            })
-            .catch(error => console.error('Error loading data:', error));
+        // Data embedded directly (no fetch required)
+        const vizData = {"funnel": {"levels": [{"label": "All Exoplanets", "count": 1174, "percent": 100}, {"label": "Habitable Zone (250–3350K)", "count": 37, "percent": 3.2}, {"label": "Earth-sized & Habitable", "count": 6, "percent": 0.51}, {"label": "Future Detection Potential", "count": 10, "percent": 0.85}]}, "timeline": [{"disc_year": 2002, "Transit": 1, "Radial Velocity": 0, "Imaging": 0, "Other": 0}, {"disc_year": 2004, "Transit": 4, "Radial Velocity": 1, "Imaging": 1, "Other": 0}, {"disc_year": 2005, "Transit": 4, "Radial Velocity": 2, "Imaging": 1, "Other": 0}, {"disc_year": 2006, "Transit": 4, "Radial Velocity": 2, "Imaging": 2, "Other": 0}, {"disc_year": 2007, "Transit": 6, "Radial Velocity": 3, "Imaging": 2, "Other": 0}, {"disc_year": 2008, "Transit": 13, "Radial Velocity": 3, "Imaging": 2, "Other": 0}, {"disc_year": 2009, "Transit": 25, "Radial Velocity": 3, "Imaging": 2, "Other": 0}, {"disc_year": 2010, "Transit": 31, "Radial Velocity": 3, "Imaging": 2, "Other": 0}, {"disc_year": 2011, "Transit": 44, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2012, "Transit": 63, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2013, "Transit": 106, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2014, "Transit": 131, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2015, "Transit": 179, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2016, "Transit": 223, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2017, "Transit": 327, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2018, "Transit": 436, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2019, "Transit": 626, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2020, "Transit": 820, "Radial Velocity": 4, "Imaging": 2, "Other": 1}, {"disc_year": 2021, "Transit": 1031, "Radial Velocity": 4, "Imaging": 2, "Other": 1}, {"disc_year": 2022, "Transit": 1102, "Radial Velocity": 4, "Imaging": 2, "Other": 1}, {"disc_year": 2023, "Transit": 1121, "Radial Velocity": 4, "Imaging": 2, "Other": 1}, {"disc_year": 2024, "Transit": 1125, "Radial Velocity": 4, "Imaging": 2, "Other": 1}, {"disc_year": 2025, "Transit": 1129, "Radial Velocity": 4, "Imaging": 2, "Other": 1}], "classification": [{"type": "Super-Earth", "count": 948, "avg_temp": 1005.0, "percent": 80.8}, {"type": "Neptune-like", "count": 131, "avg_temp": 1194.0, "percent": 11.2}, {"type": "Jupiter-like", "count": 66, "avg_temp": 1280.0, "percent": 5.6}, {"type": "Habitable Earth-like", "count": 6, "avg_temp": 308.0, "percent": 0.5}, {"type": "Hot Jupiter", "count": 23, "avg_temp": 1530.0, "percent": 2.0}], "examples": {"Super-Earth": [{"name": "TOI-2000b", "radius": "8.0", "temp": "3286"}, {"name": "K2-18b", "radius": "2.6", "temp": "281"}], "Neptune-like": [{"name": "TOI-1728b", "radius": "5.0", "temp": "1500"}, {"name": "TOI-1630b", "radius": "4.9", "temp": "1330"}], "Jupiter-like": [{"name": "HD 100546 b", "radius": "9.5", "temp": "2000"}, {"name": "TOI-677b", "radius": "6.8", "temp": "1200"}], "Hot Jupiter": [{"name": "WASP-121b", "radius": "8.0", "temp": "2352"}, {"name": "KELT-9b", "radius": "8.0", "temp": "2328"}], "Habitable Earth-like": [{"name": "K2-18b", "radius": "2.6", "temp": "281"}, {"name": "TOI-1728b", "radius": "1.0", "temp": "300"}]}, "total": 1174};
 
         function switchView(viewName) {
             // Hide all views
@@ -431,12 +423,20 @@
             // Show selected view
             document.getElementById(viewName).classList.add('active');
             event.target.classList.add('active');
+
+            // Render charts if needed
+            if (viewName === 'deepdive') {
+                setTimeout(() => {
+                    Plotly.Plots.resize('timeline-plot');
+                }, 100);
+            }
         }
 
-        function initializeVisualization() {
+        // Initialize on page load
+        window.addEventListener('load', function() {
             renderFunnelView();
             renderDiscoveryDeepDive();
-        }
+        });
 
         function renderFunnelView() {
             const container = document.getElementById('funnel-levels');
@@ -486,7 +486,6 @@
         function renderTimeline() {
             const timeline = vizData.timeline;
 
-            // Prepare data for stacked area chart
             const years = timeline.map(d => d.disc_year);
             const transit = timeline.map(d => d.Transit || 0);
             const rv = timeline.map(d => d['Radial Velocity'] || 0);

@@ -54,6 +54,7 @@
             padding: 20px;
             background: #f8f9fa;
             border-bottom: 1px solid #e9ecef;
+            flex-wrap: wrap;
         }
 
         .view-btn {
@@ -218,6 +219,41 @@
             gap: 40px;
         }
 
+        /* Scatterplot View */
+        .scatter-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .scatter-controls {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .control-group label {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.9em;
+        }
+
+        .control-group select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
         .chart-section {
             padding: 30px;
             background: #f8f9fa;
@@ -345,6 +381,10 @@
             .plot {
                 height: 300px;
             }
+
+            .scatter-controls {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -358,6 +398,7 @@
         <div class="view-toggle">
             <button class="view-btn active" onclick="switchView('funnel')">Habitability Funnel</button>
             <button class="view-btn" onclick="switchView('deepdive')">Discovery Deep Dive</button>
+            <button class="view-btn" onclick="switchView('scatter')">Detailed Explorer</button>
         </div>
 
         <div class="content">
@@ -399,6 +440,37 @@
                     </div>
                 </div>
             </div>
+
+            <!-- VIEW 3: DETAILED EXPLORER (SCATTERPLOT) -->
+            <div id="scatter" class="view">
+                <div class="scatter-container">
+                    <div class="chart-section">
+                        <h3>🔍 Detailed Explorer: Planet Properties</h3>
+                        <p>Explore the relationship between planet radius and equilibrium temperature. Each dot represents a discovered exoplanet, colored by detection method.</p>
+                        <div class="scatter-controls">
+                            <div class="control-group">
+                                <label for="y-axis">Y-Axis:</label>
+                                <select id="y-axis" onchange="updateScatterPlot()">
+                                    <option value="temp">Temperature (K)</option>
+                                    <option value="mass">Mass (Earth masses)</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label for="color-by">Color By:</label>
+                                <select id="color-by" onchange="updateScatterPlot()">
+                                    <option value="method">Discovery Method</option>
+                                    <option value="year">Discovery Year</option>
+                                    <option value="type">Planet Type</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="scatter-plot" class="plot"></div>
+                        <div class="insight">
+                            <strong>💡 How to use:</strong> Hover over points to see planet names and details. The clustering of points reveals detection bias—note how certain regions are densely populated while others are sparse.
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="footer">
@@ -409,10 +481,9 @@
 
     <script>
         // Data embedded directly (no fetch required)
-        const vizData = {"funnel": {"levels": [{"label": "All Exoplanets", "count": 1174, "percent": 100}, {"label": "Habitable Zone (250–3350K)", "count": 37, "percent": 3.2}, {"label": "Earth-sized & Habitable", "count": 6, "percent": 0.51}, {"label": "Future Detection Potential", "count": 10, "percent": 0.85}]}, "timeline": [{"disc_year": 2002, "Transit": 1, "Radial Velocity": 0, "Imaging": 0, "Other": 0}, {"disc_year": 2004, "Transit": 4, "Radial Velocity": 1, "Imaging": 1, "Other": 0}, {"disc_year": 2005, "Transit": 4, "Radial Velocity": 2, "Imaging": 1, "Other": 0}, {"disc_year": 2006, "Transit": 4, "Radial Velocity": 2, "Imaging": 2, "Other": 0}, {"disc_year": 2007, "Transit": 6, "Radial Velocity": 3, "Imaging": 2, "Other": 0}, {"disc_year": 2008, "Transit": 13, "Radial Velocity": 3, "Imaging": 2, "Other": 0}, {"disc_year": 2009, "Transit": 25, "Radial Velocity": 3, "Imaging": 2, "Other": 0}, {"disc_year": 2010, "Transit": 31, "Radial Velocity": 3, "Imaging": 2, "Other": 0}, {"disc_year": 2011, "Transit": 44, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2012, "Transit": 63, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2013, "Transit": 106, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2014, "Transit": 131, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2015, "Transit": 179, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2016, "Transit": 223, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2017, "Transit": 327, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2018, "Transit": 436, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2019, "Transit": 626, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2020, "Transit": 820, "Radial Velocity": 4, "Imaging": 2, "Other": 1}, {"disc_year": 2021, "Transit": 1031, "Radial Velocity": 4, "Imaging": 2, "Other": 1}, {"disc_year": 2022, "Transit": 1102, "Radial Velocity": 4, "Imaging": 2, "Other": 1}, {"disc_year": 2023, "Transit": 1121, "Radial Velocity": 4, "Imaging": 2, "Other": 1}, {"disc_year": 2024, "Transit": 1125, "Radial Velocity": 4, "Imaging": 2, "Other": 1}, {"disc_year": 2025, "Transit": 1129, "Radial Velocity": 4, "Imaging": 2, "Other": 1}], "classification": [{"type": "Super-Earth", "count": 948, "avg_temp": 1005.0, "percent": 80.8}, {"type": "Neptune-like", "count": 131, "avg_temp": 1194.0, "percent": 11.2}, {"type": "Jupiter-like", "count": 66, "avg_temp": 1280.0, "percent": 5.6}, {"type": "Habitable Earth-like", "count": 6, "avg_temp": 308.0, "percent": 0.5}, {"type": "Hot Jupiter", "count": 23, "avg_temp": 1530.0, "percent": 2.0}], "examples": {"Super-Earth": [{"name": "TOI-2000b", "radius": "8.0", "temp": "3286"}, {"name": "K2-18b", "radius": "2.6", "temp": "281"}], "Neptune-like": [{"name": "TOI-1728b", "radius": "5.0", "temp": "1500"}, {"name": "TOI-1630b", "radius": "4.9", "temp": "1330"}], "Jupiter-like": [{"name": "HD 100546 b", "radius": "9.5", "temp": "2000"}, {"name": "TOI-677b", "radius": "6.8", "temp": "1200"}], "Hot Jupiter": [{"name": "WASP-121b", "radius": "8.0", "temp": "2352"}, {"name": "KELT-9b", "radius": "8.0", "temp": "2328"}], "Habitable Earth-like": [{"name": "K2-18b", "radius": "2.6", "temp": "281"}, {"name": "TOI-1728b", "radius": "1.0", "temp": "300"}]}, "total": 1174};
+        const vizData = {"funnel": {"levels": [{"label": "All Exoplanets", "count": 1174, "percent": 100}, {"label": "Habitable Zone (250–350K)", "count": 37, "percent": 3.2}, {"label": "Earth-sized & Habitable", "count": 6, "percent": 0.51}]}, "timeline": [{"disc_year": 2002, "Transit": 1, "Radial Velocity": 0, "Imaging": 0, "Other": 0}, {"disc_year": 2004, "Transit": 4, "Radial Velocity": 1, "Imaging": 1, "Other": 0}, {"disc_year": 2005, "Transit": 4, "Radial Velocity": 2, "Imaging": 1, "Other": 0}, {"disc_year": 2006, "Transit": 4, "Radial Velocity": 2, "Imaging": 2, "Other": 0}, {"disc_year": 2007, "Transit": 6, "Radial Velocity": 3, "Imaging": 2, "Other": 0}, {"disc_year": 2008, "Transit": 13, "Radial Velocity": 3, "Imaging": 2, "Other": 0}, {"disc_year": 2009, "Transit": 25, "Radial Velocity": 3, "Imaging": 2, "Other": 0}, {"disc_year": 2010, "Transit": 31, "Radial Velocity": 3, "Imaging": 2, "Other": 0}, {"disc_year": 2011, "Transit": 44, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2012, "Transit": 63, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2013, "Transit": 106, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2014, "Transit": 131, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2015, "Transit": 179, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2016, "Transit": 223, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2017, "Transit": 327, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2018, "Transit": 436, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2019, "Transit": 626, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2020, "Transit": 820, "Radial Velocity": 4, "Imaging": 2, "Other": 1}, {"disc_year": 2021, "Transit": 1031, "Radial Velocity": 4, "Imaging": 2, "Other": 1}, {"disc_year": 2022, "Transit": 1102, "Radial Velocity": 4, "Imaging": 2, "Other": 1}, {"disc_year": 2023, "Transit": 1121, "Radial Velocity": 4, "Imaging": 2, "Other": 1}, {"disc_year": 2024, "Transit": 1125, "Radial Velocity": 4, "Imaging": 2, "Other": 1}, {"disc_year": 2025, "Transit": 1129, "Radial Velocity": 4, "Imaging": 2, "Other": 1}], "classification": [{"type": "Super-Earth", "count": 948, "avg_temp": 1005.0, "percent": 80.8}, {"type": "Neptune-like", "count": 131, "avg_temp": 1194.0, "percent": 11.2}, {"type": "Jupiter-like", "count": 66, "avg_temp": 1280.0, "percent": 5.6}, {"type": "Habitable Earth-like", "count": 6, "avg_temp": 308.0, "percent": 0.5}, {"type": "Hot Jupiter", "count": 23, "avg_temp": 1530.0, "percent": 2.0}], "examples": {"Super-Earth": [{"name": "TOI-2000b", "radius": "8.0", "temp": "3286"}, {"name": "K2-18b", "radius": "2.6", "temp": "281"}], "Neptune-like": [{"name": "TOI-1728b", "radius": "5.0", "temp": "1500"}, {"name": "TOI-1630b", "radius": "4.9", "temp": "1330"}], "Jupiter-like": [{"name": "HD 100546 b", "radius": "9.5", "temp": "2000"}, {"name": "TOI-677b", "radius": "6.8", "temp": "1200"}], "Hot Jupiter": [{"name": "WASP-121b", "radius": "8.0", "temp": "2352"}, {"name": "KELT-9b", "radius": "8.0", "temp": "2328"}], "Habitable Earth-like": [{"name": "K2-18b", "radius": "2.6", "temp": "281"}, {"name": "TOI-1728b", "radius": "1.0", "temp": "300"}]}, "total": 1174, "scatter_planets": [{"name": "TOI-2000b", "radius": 8.0, "mass": 4417.84, "temp": 5.74, "year": 2015, "method": "Imaging", "type": "Jupiter-like"}, {"name": "55 Cnc e", "radius": 1.88, "mass": 7.99, "temp": 1782.78, "year": 2004, "method": "Radial Velocity", "type": "Super-Earth"}, {"name": "BD+60 1417 b", "radius": 14.68, "mass": 4767.43, "temp": 1303.0, "year": 2021, "method": "Imaging", "type": "Jupiter-like"}, {"name": "BD-14 3065 b", "radius": 21.59, "mass": 3932.0, "temp": 2001.0, "year": 2024, "method": "Transit", "type": "Jupiter-like"}, {"name": "CFHTWIR-Oph 98 b", "radius": 20.85, "mass": 2479.06, "temp": 1800.0, "year": 2021, "method": "Imaging", "type": "Jupiter-like"}, {"name": "CT Cha b", "radius": 24.66, "mass": 5403.0, "temp": 2600.0, "year": 2007, "method": "Imaging", "type": "Jupiter-like"}, {"name": "CoRoT-1 b", "radius": 16.7, "mass": 327.35, "temp": 1898.0, "year": 2008, "method": "Transit", "type": "Jupiter-like"}, {"name": "CoRoT-10 b", "radius": 10.87, "mass": 874.0, "temp": 600.0, "year": 2010, "method": "Transit", "type": "Jupiter-like"}, {"name": "CoRoT-11 b", "radius": 16.03, "mass": 740.51, "temp": 1657.0, "year": 2010, "method": "Transit", "type": "Jupiter-like"}, {"name": "CoRoT-12 b", "radius": 16.14, "mass": 291.44, "temp": 1442.0, "year": 2010, "method": "Transit", "type": "Jupiter-like"}]};
 
         function switchView(viewName) {
-            // Hide all views
             document.querySelectorAll('.view').forEach(view => {
                 view.classList.remove('active');
             });
@@ -420,19 +491,16 @@
                 btn.classList.remove('active');
             });
 
-            // Show selected view
             document.getElementById(viewName).classList.add('active');
             event.target.classList.add('active');
 
-            // Render charts if needed
-            if (viewName === 'deepdive') {
+            if (viewName === 'scatter') {
                 setTimeout(() => {
-                    Plotly.Plots.resize('timeline-plot');
+                    updateScatterPlot();
                 }, 100);
             }
         }
 
-        // Initialize on page load
         window.addEventListener('load', function() {
             renderFunnelView();
             renderDiscoveryDeepDive();
@@ -458,7 +526,6 @@
                 </div>
             `).join('');
 
-            // Set conclusion text
             const earthLike = vizData.funnel.levels[2].count;
             document.getElementById('conclusion-text').textContent =
                 `Only ~${earthLike} planets might support life as we know it. That's ${vizData.funnel.levels[2].percent}% of all exoplanets discovered.`;
@@ -468,8 +535,7 @@
             const details = [
                 "All exoplanets discovered from 2002 to 2025 in the NASA Exoplanet Archive.",
                 "Planets with equilibrium temperatures between 250–350K (suitable for liquid water on Earth-like worlds).",
-                "Planets with both habitable temperatures AND Earth-like sizes (0.8–1.5 Earth radii). These are the most promising candidates for life as we know it.",
-                "Planets that might be detectable by next-generation telescopes with improved sensitivity."
+                "Planets with both habitable temperatures AND Earth-like sizes (0.8–1.5 Earth radii). These are the most promising candidates for life as we know it."
             ];
             return details[idx] || "";
         }
@@ -567,6 +633,109 @@
 
         function toggleExamples(element) {
             element.querySelector('.type-examples').classList.toggle('show');
+        }
+
+        function updateScatterPlot() {
+            const yAxis = document.getElementById('y-axis').value;
+            const colorBy = document.getElementById('color-by').value;
+            const planets = vizData.scatter_planets || [];
+
+            // Color mapping
+            const methodColors = {
+                'Transit': '#3498db',
+                'Radial Velocity': '#e74c3c',
+                'Imaging': '#2ecc71',
+                'Other': '#95a5a6'
+            };
+
+            const typeColors = {
+                'Super-Earth': '#3498db',
+                'Neptune-like': '#9b59b6',
+                'Jupiter-like': '#f39c12',
+                'Hot Jupiter': '#e74c3c',
+                'Habitable Earth-like': '#27ae60'
+            };
+
+            // Group data by color dimension
+            const grouped = {};
+            planets.forEach(p => {
+                let groupKey;
+                if (colorBy === 'method') {
+                    groupKey = p.method;
+                } else if (colorBy === 'year') {
+                    groupKey = p.year;
+                } else {
+                    groupKey = p.type;
+                }
+
+                if (!grouped[groupKey]) {
+                    grouped[groupKey] = [];
+                }
+                grouped[groupKey].push(p);
+            });
+
+            // Create traces for each group
+            const traces = Object.keys(grouped).map(groupKey => {
+                const groupPlanets = grouped[groupKey];
+                const yData = groupPlanets.map(p => yAxis === 'temp' ? p.temp : p.mass);
+                let color;
+
+                if (colorBy === 'method') {
+                    color = methodColors[groupKey] || '#999';
+                } else if (colorBy === 'year') {
+                    color = `rgba(102, 126, 234, ${0.3 + (groupKey - 2002) / 23 * 0.7})`;
+                } else {
+                    color = typeColors[groupKey] || '#999';
+                }
+
+                return {
+                    x: groupPlanets.map(p => p.radius),
+                    y: yData,
+                    name: groupKey.toString(),
+                    mode: 'markers',
+                    marker: {
+                        size: 8,
+                        color: color,
+                        opacity: 0.7,
+                        line: { width: 1, color: 'white' }
+                    },
+                    text: groupPlanets.map(p => `${p.name}<br>Radius: ${p.radius.toFixed(2)} R⊕<br>${yAxis === 'temp' ? `Temp: ${p.temp.toFixed(0)} K` : `Mass: ${p.mass.toFixed(2)} M⊕`}<br>Discovery: ${p.year} (${p.method})`),
+                    hovertemplate: '<b>%{text}</b><extra></extra>',
+                };
+            });
+
+            const layout = {
+                title: '',
+                xaxis: { title: 'Planet Radius (Earth radii)', type: 'log' },
+                yaxis: {
+                    title: yAxis === 'temp' ? 'Equilibrium Temperature (K)' : 'Planet Mass (Earth masses)',
+                    type: yAxis === 'temp' ? 'log' : 'log'
+                },
+                hovermode: 'closest',
+                showlegend: true,
+                height: 500,
+                margin: { b: 60, l: 70, r: 40, t: 20 },
+                plot_bgcolor: '#fff',
+                paper_bgcolor: '#f8f9fa',
+            };
+
+            // Add habitable zone rectangle
+            if (yAxis === 'temp') {
+                layout.shapes = [{
+                    type: 'rect',
+                    xref: 'paper',
+                    yref: 'y',
+                    x0: -0.05,
+                    y0: 250,
+                    x1: 1.05,
+                    y1: 350,
+                    fillcolor: '#27ae60',
+                    opacity: 0.1,
+                    line: { color: '#27ae60', width: 2, dash: 'dash' }
+                }];
+            }
+
+            Plotly.newPlot('scatter-plot', traces, layout, { responsive: true });
         }
     </script>
 </body>

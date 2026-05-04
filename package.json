@@ -1,0 +1,17 @@
+{
+  "name": "datavisual",
+  "version": "1.0.0",
+  "description": "An interactive web visualization exploring discovery patterns and observational bias in exoplanet data.",
+  "main": "embedded_data.js",
+  "scripts": {
+    "dev": "http-server -p 8080 -o",
+    "start": "http-server -p 8080"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

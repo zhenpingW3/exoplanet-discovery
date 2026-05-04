@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exoplanet Discovery Visualization</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .view-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .view-btn {
+            padding: 12px 24px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .view-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .content {
+            padding: 40px 20px;
+        }
+
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Habitability Funnel View */
+        .funnel-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .funnel-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .funnel-title h2 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.8em;
+        }
+
+        .funnel-title p {
+            color: #666;
+            font-size: 1em;
+        }
+
+        .funnel-level {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .funnel-level:hover {
+            background: #e7f0ff;
+            transform: translateX(5px);
+        }
+
+        .level-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .level-bar {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 30px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+            color: white;
+            font-weight: 600;
+        }
+
+        .level-stats {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .level-details {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .level-details.show {
+            display: block;
+        }
+
+        .funnel-conclusion {
+            margin-top: 50px;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            text-align: center;
+        }
+
+        .funnel-conclusion h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .funnel-conclusion p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .explore-btn {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .explore-btn:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        /* Discovery Deep Dive View */
+        .deepdive-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+        }
+
+        .chart-section {
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .chart-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .chart-section p {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+
+        .plot {
+            width: 100%;
+            height: 400px;
+            margin-bottom: 20px;
+        }
+
+        .classification-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .type-card {
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .type-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+        }
+
+        .type-card.hot-jupiter {
+            border-left-color: #e74c3c;
+        }
+
+        .type-card.habitable {
+            border-left-color: #27ae60;
+        }
+
+        .type-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .type-count {
+            font-size: 1.8em;
+            color: #667eea;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .type-percent {
+            font-size: 0.85em;
+            color: #999;
+        }
+
+        .type-examples {
+            display: none;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .type-examples.show {
+            display: block;
+        }
+
+        .example {
+            padding: 5px 0;
+        }
+
+        .insight {
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border-left: 4px solid #f39c12;
+            border-radius: 4px;
+            font-size: 0.95em;
+            color: #666;
+        }
+
+        .insight strong {
+            color: #333;
+        }
+
+        .footer {
+            padding: 30px 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .view-toggle {
+                flex-direction: column;
+            }
+
+            .classification-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .plot {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌍 Exoplanet Discoveries</h1>
+            <p>Revealing patterns in our search for worlds beyond Earth</p>
+        </div>
+
+        <div class="view-toggle">
+            <button class="view-btn active" onclick="switchView('funnel')">Habitability Funnel</button>
+            <button class="view-btn" onclick="switchView('deepdive')">Discovery Deep Dive</button>
+        </div>
+
+        <div class="content">
+            <!-- VIEW 1: HABITABILITY FUNNEL -->
+            <div id="funnel" class="view active">
+                <div class="funnel-container">
+                    <div class="funnel-title">
+                        <h2>Are We Alone?</h2>
+                        <p>How many planets could support life as we know it?</p>
+                    </div>
+                    <div id="funnel-levels"></div>
+                    <div class="funnel-conclusion">
+                        <h3>The Bottom Line</h3>
+                        <p id="conclusion-text"></p>
+                        <button class="explore-btn" onclick="switchView('deepdive')">Want to know why? → Explore the Discovery Details</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 2: DISCOVERY DEEP DIVE -->
+            <div id="deepdive" class="view">
+                <div class="deepdive-container">
+                    <div class="chart-section">
+                        <h3>📈 Discovery Timeline: How Fast Are We Finding?</h3>
+                        <p>The number of discovered exoplanets has accelerated dramatically. Most discoveries come from specific detection methods that bias us toward certain planet types.</p>
+                        <div id="timeline-plot" class="plot"></div>
+                        <div class="insight">
+                            <strong>💡 Insight:</strong> 95% of all exoplanets were discovered after 2009. The Transit method dominates (~96%), detecting planets that pass in front of their stars.
+                        </div>
+                    </div>
+
+                    <div class="chart-section">
+                        <h3>🪐 Planetary Types: What Have We Found?</h3>
+                        <p>Planets come in many types, far more diverse than our solar system. Click on a type to see examples.</p>
+                        <div class="classification-grid" id="classification-grid"></div>
+                        <div class="insight">
+                            <strong>💡 Insight:</strong> Hot Jupiters (massive planets orbiting extremely close to their stars) are overrepresented in our sample. This is because they're easy to detect—not because they're common!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Data source: <a href="https://exoplanetarchive.ipac.caltech.edu/" target="_blank">NASA Exoplanet Archive</a> (1,174 planets discovered 2002-2025)</p>
+            <p>Habitable zone: ~250–350K (Earth-sized planets with potential for liquid water)</p>
+        </div>
+    </div>
+
+    <script>
+        let vizData = {};
+
+        // Load data from JSON file
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                vizData = data;
+                initializeVisualization();
+            })
+            .catch(error => console.error('Error loading data:', error));
+
+        function switchView(viewName) {
+            // Hide all views
+            document.querySelectorAll('.view').forEach(view => {
+                view.classList.remove('active');
+            });
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected view
+            document.getElementById(viewName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function initializeVisualization() {
+            renderFunnelView();
+            renderDiscoveryDeepDive();
+        }
+
+        function renderFunnelView() {
+            const container = document.getElementById('funnel-levels');
+            const levels = vizData.funnel.levels;
+
+            container.innerHTML = levels.map((level, idx) => `
+                <div class="funnel-level" onclick="toggleDetails(this)">
+                    <div class="level-label">${level.label}</div>
+                    <div class="level-bar" style="width: ${(level.count / levels[0].count) * 100}%">
+                        ${level.count.toLocaleString()} planets (${level.percent}%)
+                    </div>
+                    <div class="level-stats">
+                        <span>${level.count.toLocaleString()} planets</span>
+                        <span>${level.percent}% of total</span>
+                    </div>
+                    <div class="level-details">
+                        ${getFunnelDetails(idx)}
+                    </div>
+                </div>
+            `).join('');
+
+            // Set conclusion text
+            const earthLike = vizData.funnel.levels[2].count;
+            document.getElementById('conclusion-text').textContent =
+                `Only ~${earthLike} planets might support life as we know it. That's ${vizData.funnel.levels[2].percent}% of all exoplanets discovered.`;
+        }
+
+        function getFunnelDetails(idx) {
+            const details = [
+                "All exoplanets discovered from 2002 to 2025 in the NASA Exoplanet Archive.",
+                "Planets with equilibrium temperatures between 250–350K (suitable for liquid water on Earth-like worlds).",
+                "Planets with both habitable temperatures AND Earth-like sizes (0.8–1.5 Earth radii). These are the most promising candidates for life as we know it.",
+                "Planets that might be detectable by next-generation telescopes with improved sensitivity."
+            ];
+            return details[idx] || "";
+        }
+
+        function toggleDetails(element) {
+            element.querySelector('.level-details').classList.toggle('show');
+        }
+
+        function renderDiscoveryDeepDive() {
+            renderTimeline();
+            renderClassification();
+        }
+
+        function renderTimeline() {
+            const timeline = vizData.timeline;
+
+            // Prepare data for stacked area chart
+            const years = timeline.map(d => d.disc_year);
+            const transit = timeline.map(d => d.Transit || 0);
+            const rv = timeline.map(d => d['Radial Velocity'] || 0);
+            const imaging = timeline.map(d => d.Imaging || 0);
+            const other = timeline.map(d => d.Other || 0);
+
+            const trace1 = {
+                x: years,
+                y: transit,
+                name: 'Transit',
+                stackgroup: 'one',
+                fillcolor: '#3498db',
+                line: { color: '#3498db', width: 2 },
+            };
+
+            const trace2 = {
+                x: years,
+                y: rv,
+                name: 'Radial Velocity',
+                stackgroup: 'one',
+                fillcolor: '#e74c3c',
+                line: { color: '#e74c3c', width: 2 },
+            };
+
+            const trace3 = {
+                x: years,
+                y: imaging,
+                name: 'Imaging',
+                stackgroup: 'one',
+                fillcolor: '#2ecc71',
+                line: { color: '#2ecc71', width: 2 },
+            };
+
+            const trace4 = {
+                x: years,
+                y: other,
+                name: 'Other',
+                stackgroup: 'one',
+                fillcolor: '#95a5a6',
+                line: { color: '#95a5a6', width: 2 },
+            };
+
+            const layout = {
+                title: '',
+                xaxis: { title: 'Discovery Year' },
+                yaxis: { title: 'Cumulative Number of Exoplanets' },
+                hovermode: 'x unified',
+                showlegend: true,
+                margin: { b: 50, l: 60, r: 40, t: 20 },
+                plot_bgcolor: '#fff',
+                paper_bgcolor: '#f8f9fa',
+            };
+
+            Plotly.newPlot('timeline-plot', [trace1, trace2, trace3, trace4], layout, { responsive: true });
+        }
+
+        function renderClassification() {
+            const grid = document.getElementById('classification-grid');
+            const classification = vizData.classification || [];
+
+            grid.innerHTML = classification.map(item => {
+                const examples = vizData.examples[item.type] || [];
+                const isHotJupiter = item.type === 'Hot Jupiter' ? 'hot-jupiter' : '';
+                const isHabitable = item.type === 'Habitable Earth-like' ? 'habitable' : '';
+
+                return `
+                    <div class="type-card ${isHotJupiter} ${isHabitable}" onclick="toggleExamples(this)">
+                        <div class="type-name">${item.type}</div>
+                        <div class="type-count">${item.count}</div>
+                        <div class="type-percent">${item.percent}% of all planets</div>
+                        <div class="type-examples">
+                            <strong>Examples:</strong>
+                            ${examples.map(ex => `<div class="example">${ex.name} (${ex.radius} R⊕, ${ex.temp}K)</div>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleExamples(element) {
+            element.querySelector('.type-examples').classList.toggle('show');
+        }
+    </script>
+</body>
+</html>

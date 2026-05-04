@@ -1,0 +1,284 @@
+﻿{
+  "funnel": {
+    "levels": [
+      {
+        "label": "All Exoplanets",
+        "count": 1174,
+        "percent": 100
+      },
+      {
+        "label": "Habitable Zone (250\u2013350K)",
+        "count": 37,
+        "percent": 3.2
+      },
+      {
+        "label": "Earth-sized & Habitable",
+        "count": 6,
+        "percent": 0.51
+      },
+      {
+        "label": "Future Detection Potential",
+        "count": 10,
+        "percent": 0.85
+      }
+    ]
+  },
+  "timeline": [
+    {
+      "disc_year": 2002,
+      "Imaging": 0,
+      "Other": 0,
+      "Radial Velocity": 0,
+      "Transit": 1
+    },
+    {
+      "disc_year": 2004,
+      "Imaging": 1,
+      "Other": 0,
+      "Radial Velocity": 1,
+      "Transit": 4
+    },
+    {
+      "disc_year": 2005,
+      "Imaging": 1,
+      "Other": 0,
+      "Radial Velocity": 2,
+      "Transit": 4
+    },
+    {
+      "disc_year": 2006,
+      "Imaging": 2,
+      "Other": 0,
+      "Radial Velocity": 2,
+      "Transit": 5
+    },
+    {
+      "disc_year": 2007,
+      "Imaging": 3,
+      "Other": 0,
+      "Radial Velocity": 3,
+      "Transit": 12
+    },
+    {
+      "disc_year": 2008,
+      "Imaging": 3,
+      "Other": 0,
+      "Radial Velocity": 3,
+      "Transit": 21
+    },
+    {
+      "disc_year": 2009,
+      "Imaging": 3,
+      "Other": 0,
+      "Radial Velocity": 3,
+      "Transit": 33
+    },
+    {
+      "disc_year": 2010,
+      "Imaging": 4,
+      "Other": 0,
+      "Radial Velocity": 4,
+      "Transit": 61
+    },
+    {
+      "disc_year": 2011,
+      "Imaging": 4,
+      "Other": 2,
+      "Radial Velocity": 4,
+      "Transit": 111
+    },
+    {
+      "disc_year": 2012,
+      "Imaging": 5,
+      "Other": 2,
+      "Radial Velocity": 5,
+      "Transit": 141
+    },
+    {
+      "disc_year": 2013,
+      "Imaging": 5,
+      "Other": 3,
+      "Radial Velocity": 5,
+      "Transit": 174
+    },
+    {
+      "disc_year": 2014,
+      "Imaging": 6,
+      "Other": 3,
+      "Radial Velocity": 5,
+      "Transit": 241
+    },
+    {
+      "disc_year": 2015,
+      "Imaging": 8,
+      "Other": 3,
+      "Radial Velocity": 9,
+      "Transit": 274
+    },
+    {
+      "disc_year": 2016,
+      "Imaging": 8,
+      "Other": 3,
+      "Radial Velocity": 9,
+      "Transit": 364
+    },
+    {
+      "disc_year": 2017,
+      "Imaging": 9,
+      "Other": 3,
+      "Radial Velocity": 9,
+      "Transit": 418
+    },
+    {
+      "disc_year": 2018,
+      "Imaging": 10,
+      "Other": 3,
+      "Radial Velocity": 9,
+      "Transit": 499
+    },
+    {
+      "disc_year": 2019,
+      "Imaging": 11,
+      "Other": 3,
+      "Radial Velocity": 12,
+      "Transit": 564
+    },
+    {
+      "disc_year": 2020,
+      "Imaging": 12,
+      "Other": 3,
+      "Radial Velocity": 13,
+      "Transit": 637
+    },
+    {
+      "disc_year": 2021,
+      "Imaging": 15,
+      "Other": 3,
+      "Radial Velocity": 17,
+      "Transit": 717
+    },
+    {
+      "disc_year": 2022,
+      "Imaging": 16,
+      "Other": 3,
+      "Radial Velocity": 18,
+      "Transit": 801
+    },
+    {
+      "disc_year": 2023,
+      "Imaging": 16,
+      "Other": 3,
+      "Radial Velocity": 21,
+      "Transit": 919
+    },
+    {
+      "disc_year": 2024,
+      "Imaging": 16,
+      "Other": 3,
+      "Radial Velocity": 22,
+      "Transit": 1039
+    },
+    {
+      "disc_year": 2025,
+      "Imaging": 17,
+      "Other": 3,
+      "Radial Velocity": 24,
+      "Transit": 1130
+    }
+  ],
+  "classification": [
+    {
+      "type": "Super-Earth",
+      "count": 165,
+      "avg_temp": 1048.0,
+      "percent": 14.1
+    },
+    {
+      "type": "Neptune-like",
+      "count": 309,
+      "avg_temp": 793.0,
+      "percent": 26.3
+    },
+    {
+      "type": "Jupiter-like",
+      "count": 195,
+      "avg_temp": 659.0,
+      "percent": 16.6
+    },
+    {
+      "type": "Hot Jupiter",
+      "count": 499,
+      "avg_temp": 1549.0,
+      "percent": 42.5
+    },
+    {
+      "type": "Habitable Earth-like",
+      "count": 6,
+      "avg_temp": 308.0,
+      "percent": 0.5
+    }
+  ],
+  "examples": {
+    "Super-Earth": [
+      {
+        "name": "TOI-733 b",
+        "radius": "2.0",
+        "temp": "1056"
+      },
+      {
+        "name": "HD 235088 b",
+        "radius": "2.0",
+        "temp": "740"
+      }
+    ],
+    "Neptune-like": [
+      {
+        "name": "HD 152843 c",
+        "radius": "5.9",
+        "temp": "865"
+      },
+      {
+        "name": "TOI-4010 c",
+        "radius": "5.9",
+        "temp": "907"
+      }
+    ],
+    "Jupiter-like": [
+      {
+        "name": "PDS 70 c",
+        "radius": "22.9",
+        "temp": "995"
+      },
+      {
+        "name": "Kepler-447 b",
+        "radius": "18.5",
+        "temp": "895"
+      }
+    ],
+    "Hot Jupiter": [
+      {
+        "name": "GQ Lup b",
+        "radius": "33.6",
+        "temp": "2650"
+      },
+      {
+        "name": "PDS 70 b",
+        "radius": "30.5",
+        "temp": "1204"
+      }
+    ],
+    "Habitable Earth-like": [
+      {
+        "name": "K2-3 d",
+        "radius": "1.5",
+        "temp": "305"
+      },
+      {
+        "name": "LP 890-9 c",
+        "radius": "1.4",
+        "temp": "272"
+      }
+    ]
+  },
+  "total": 1174
+}

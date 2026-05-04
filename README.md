@@ -64,7 +64,32 @@ The visualization works for three audiences simultaneously:
    - See visualization techniques for storytelling
    - Understand data cleaning and categorization logic
 
-## 🔧 How to Regenerate Data
+## 💻 Development
+
+### Setup
+
+1. **Install dependencies**:
+
+   ```bash
+   pnpm install
+   # or npm install / yarn install
+   ```
+
+2. **Start dev server**:
+
+   ```bash
+   pnpm dev
+   # Opens http://localhost:8080 in your browser automatically
+   ```
+
+3. **Start server without opening browser**:
+
+   ```bash
+   pnpm start
+   # Server runs at http://localhost:8080
+   ```
+
+### Regenerate Data
 
 If you modify the raw data or categorization logic:
 
@@ -72,7 +97,7 @@ If you modify the raw data or categorization logic:
 python generate_visualization.py > data.json
 ```
 
-Then refresh `index.html` in your browser.
+Then refresh `index.html` in your browser (or reload the dev server).
 
 ## 🛠 Technologies
 

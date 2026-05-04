@@ -480,6 +480,17 @@
     </div>
 
     <script>
+        // Load complete scatter data from external file
+        let scatterPlanets = [];
+        fetch('scatter_data.json')
+            .then(r => r.json())
+            .then(data => {
+                scatterPlanets = data;
+            })
+            .catch(() => {
+                console.log('Note: scatter_data.json not found, using embedded data only');
+            });
+
         // Data embedded directly (no fetch required)
         const vizData = {"funnel": {"levels": [{"label": "All Exoplanets", "count": 1174, "percent": 100}, {"label": "Habitable Zone (250–350K)", "count": 37, "percent": 3.2}, {"label": "Earth-sized & Habitable", "count": 6, "percent": 0.51}]}, "timeline": [{"disc_year": 2002, "Transit": 1, "Radial Velocity": 0, "Imaging": 0, "Other": 0}, {"disc_year": 2004, "Transit": 4, "Radial Velocity": 1, "Imaging": 1, "Other": 0}, {"disc_year": 2005, "Transit": 4, "Radial Velocity": 2, "Imaging": 1, "Other": 0}, {"disc_year": 2006, "Transit": 4, "Radial Velocity": 2, "Imaging": 2, "Other": 0}, {"disc_year": 2007, "Transit": 6, "Radial Velocity": 3, "Imaging": 2, "Other": 0}, {"disc_year": 2008, "Transit": 13, "Radial Velocity": 3, "Imaging": 2, "Other": 0}, {"disc_year": 2009, "Transit": 25, "Radial Velocity": 3, "Imaging": 2, "Other": 0}, {"disc_year": 2010, "Transit": 31, "Radial Velocity": 3, "Imaging": 2, "Other": 0}, {"disc_year": 2011, "Transit": 44, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2012, "Transit": 63, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2013, "Transit": 106, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2014, "Transit": 131, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2015, "Transit": 179, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2016, "Transit": 223, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2017, "Transit": 327, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2018, "Transit": 436, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2019, "Transit": 626, "Radial Velocity": 3, "Imaging": 2, "Other": 1}, {"disc_year": 2020, "Transit": 820, "Radial Velocity": 4, "Imaging": 2, "Other": 1}, {"disc_year": 2021, "Transit": 1031, "Radial Velocity": 4, "Imaging": 2, "Other": 1}, {"disc_year": 2022, "Transit": 1102, "Radial Velocity": 4, "Imaging": 2, "Other": 1}, {"disc_year": 2023, "Transit": 1121, "Radial Velocity": 4, "Imaging": 2, "Other": 1}, {"disc_year": 2024, "Transit": 1125, "Radial Velocity": 4, "Imaging": 2, "Other": 1}, {"disc_year": 2025, "Transit": 1129, "Radial Velocity": 4, "Imaging": 2, "Other": 1}], "classification": [{"type": "Super-Earth", "count": 948, "avg_temp": 1005.0, "percent": 80.8}, {"type": "Neptune-like", "count": 131, "avg_temp": 1194.0, "percent": 11.2}, {"type": "Jupiter-like", "count": 66, "avg_temp": 1280.0, "percent": 5.6}, {"type": "Habitable Earth-like", "count": 6, "avg_temp": 308.0, "percent": 0.5}, {"type": "Hot Jupiter", "count": 23, "avg_temp": 1530.0, "percent": 2.0}], "examples": {"Super-Earth": [{"name": "TOI-2000b", "radius": "8.0", "temp": "3286"}, {"name": "K2-18b", "radius": "2.6", "temp": "281"}], "Neptune-like": [{"name": "TOI-1728b", "radius": "5.0", "temp": "1500"}, {"name": "TOI-1630b", "radius": "4.9", "temp": "1330"}], "Jupiter-like": [{"name": "HD 100546 b", "radius": "9.5", "temp": "2000"}, {"name": "TOI-677b", "radius": "6.8", "temp": "1200"}], "Hot Jupiter": [{"name": "WASP-121b", "radius": "8.0", "temp": "2352"}, {"name": "KELT-9b", "radius": "8.0", "temp": "2328"}], "Habitable Earth-like": [{"name": "K2-18b", "radius": "2.6", "temp": "281"}, {"name": "TOI-1728b", "radius": "1.0", "temp": "300"}]}, "total": 1174, "scatter_planets": [{"name": "TOI-2000b", "radius": 8.0, "mass": 4417.84, "temp": 5.74, "year": 2015, "method": "Imaging", "type": "Jupiter-like"}, {"name": "55 Cnc e", "radius": 1.88, "mass": 7.99, "temp": 1782.78, "year": 2004, "method": "Radial Velocity", "type": "Super-Earth"}, {"name": "BD+60 1417 b", "radius": 14.68, "mass": 4767.43, "temp": 1303.0, "year": 2021, "method": "Imaging", "type": "Jupiter-like"}, {"name": "BD-14 3065 b", "radius": 21.59, "mass": 3932.0, "temp": 2001.0, "year": 2024, "method": "Transit", "type": "Jupiter-like"}, {"name": "CFHTWIR-Oph 98 b", "radius": 20.85, "mass": 2479.06, "temp": 1800.0, "year": 2021, "method": "Imaging", "type": "Jupiter-like"}, {"name": "CT Cha b", "radius": 24.66, "mass": 5403.0, "temp": 2600.0, "year": 2007, "method": "Imaging", "type": "Jupiter-like"}, {"name": "CoRoT-1 b", "radius": 16.7, "mass": 327.35, "temp": 1898.0, "year": 2008, "method": "Transit", "type": "Jupiter-like"}, {"name": "CoRoT-10 b", "radius": 10.87, "mass": 874.0, "temp": 600.0, "year": 2010, "method": "Transit", "type": "Jupiter-like"}, {"name": "CoRoT-11 b", "radius": 16.03, "mass": 740.51, "temp": 1657.0, "year": 2010, "method": "Transit", "type": "Jupiter-like"}, {"name": "CoRoT-12 b", "radius": 16.14, "mass": 291.44, "temp": 1442.0, "year": 2010, "method": "Transit", "type": "Jupiter-like"}]};
 
@@ -638,22 +649,21 @@
         function updateScatterPlot() {
             const yAxis = document.getElementById('y-axis').value;
             const colorBy = document.getElementById('color-by').value;
-            const planets = vizData.scatter_planets || [];
+
+            // Use full dataset if available, otherwise use embedded data
+            let planets = scatterPlanets.length > 0 ? scatterPlanets : vizData.scatter_planets || [];
+
+            if (planets.length === 0) {
+                console.error('No planet data available');
+                return;
+            }
 
             // Color mapping
             const methodColors = {
                 'Transit': '#3498db',
                 'Radial Velocity': '#e74c3c',
-                'Imaging': '#2ecc71',
+                'Imaging': '#9b59b6',
                 'Other': '#95a5a6'
-            };
-
-            const typeColors = {
-                'Super-Earth': '#3498db',
-                'Neptune-like': '#9b59b6',
-                'Jupiter-like': '#f39c12',
-                'Hot Jupiter': '#e74c3c',
-                'Habitable Earth-like': '#27ae60'
             };
 
             // Group data by color dimension
@@ -663,9 +673,9 @@
                 if (colorBy === 'method') {
                     groupKey = p.method;
                 } else if (colorBy === 'year') {
-                    groupKey = p.year;
+                    groupKey = Math.floor(p.year / 2) * 2; // Group by 2-year bins
                 } else {
-                    groupKey = p.type;
+                    groupKey = 'All'; // Single group for simplicity
                 }
 
                 if (!grouped[groupKey]) {
@@ -675,65 +685,126 @@
             });
 
             // Create traces for each group
-            const traces = Object.keys(grouped).map(groupKey => {
-                const groupPlanets = grouped[groupKey];
-                const yData = groupPlanets.map(p => yAxis === 'temp' ? p.temp : p.mass);
-                let color;
+            const traces = [];
 
-                if (colorBy === 'method') {
-                    color = methodColors[groupKey] || '#999';
-                } else if (colorBy === 'year') {
-                    color = `rgba(102, 126, 234, ${0.3 + (groupKey - 2002) / 23 * 0.7})`;
-                } else {
-                    color = typeColors[groupKey] || '#999';
-                }
+            if (colorBy === 'method') {
+                // Method-based coloring
+                const methods = ['Transit', 'Radial Velocity', 'Imaging', 'Other'];
+                methods.forEach(method => {
+                    const methodPlanets = grouped[method] || [];
+                    if (methodPlanets.length > 0) {
+                        traces.push({
+                            x: methodPlanets.map(p => p.radius),
+                            y: methodPlanets.map(p => yAxis === 'temp' ? p.temp : p.mass),
+                            name: method,
+                            mode: 'markers',
+                            marker: {
+                                size: 6,
+                                color: methodColors[method],
+                                opacity: 0.6,
+                                line: { width: 0.5, color: 'rgba(255,255,255,0.5)' }
+                            },
+                            text: methodPlanets.map(p => `<b>${p.name}</b><br>Star: ${p.star}<br>Radius: ${p.radius.toFixed(2)} R⊕<br>${yAxis === 'temp' ? `Temp: ${p.temp.toFixed(0)} K` : `Mass: ${p.mass.toFixed(1)} M⊕`}<br>Discovery: ${p.year} (${p.method})`),
+                            hovertemplate: '%{text}<extra></extra>',
+                        });
+                    }
+                });
+            } else {
+                // Year-based or single group coloring
+                Object.keys(grouped).forEach((groupKey, idx) => {
+                    const groupPlanets = grouped[groupKey];
+                    let color;
+                    if (colorBy === 'year') {
+                        // Color gradient by year
+                        const normalized = (groupKey - 2000) / 25;
+                        color = `rgba(52, 152, 219, ${0.4 + normalized * 0.5})`;
+                    } else {
+                        color = '#3498db';
+                    }
 
-                return {
-                    x: groupPlanets.map(p => p.radius),
-                    y: yData,
-                    name: groupKey.toString(),
-                    mode: 'markers',
-                    marker: {
-                        size: 8,
-                        color: color,
-                        opacity: 0.7,
-                        line: { width: 1, color: 'white' }
-                    },
-                    text: groupPlanets.map(p => `${p.name}<br>Radius: ${p.radius.toFixed(2)} R⊕<br>${yAxis === 'temp' ? `Temp: ${p.temp.toFixed(0)} K` : `Mass: ${p.mass.toFixed(2)} M⊕`}<br>Discovery: ${p.year} (${p.method})`),
-                    hovertemplate: '<b>%{text}</b><extra></extra>',
-                };
+                    traces.push({
+                        x: groupPlanets.map(p => p.radius),
+                        y: groupPlanets.map(p => yAxis === 'temp' ? p.temp : p.mass),
+                        name: colorBy === 'year' ? `${groupKey}-${groupKey + 1}` : 'All Planets',
+                        mode: 'markers',
+                        marker: {
+                            size: 6,
+                            color: color,
+                            opacity: 0.6,
+                            line: { width: 0.5, color: 'rgba(255,255,255,0.5)' }
+                        },
+                        text: groupPlanets.map(p => `<b>${p.name}</b><br>Star: ${p.star}<br>Radius: ${p.radius.toFixed(2)} R⊕<br>${yAxis === 'temp' ? `Temp: ${p.temp.toFixed(0)} K` : `Mass: ${p.mass.toFixed(1)} M⊕`}<br>Discovery: ${p.year} (${p.method})`),
+                        hovertemplate: '%{text}<extra></extra>',
+                    });
+                });
+            }
+
+            // Add Earth as reference point
+            traces.push({
+                x: [1.0],
+                y: yAxis === 'temp' ? [288] : [1.0],
+                name: 'Earth (reference)',
+                mode: 'markers',
+                marker: {
+                    size: 12,
+                    color: '#2ecc71',
+                    symbol: 'star',
+                    line: { width: 2, color: 'white' }
+                },
+                hovertemplate: '<b>Earth</b><br>Radius: 1.0 R⊕<br>' + (yAxis === 'temp' ? 'Temp: 288 K' : 'Mass: 1.0 M⊕') + '<extra></extra>',
             });
 
             const layout = {
                 title: '',
-                xaxis: { title: 'Planet Radius (Earth radii)', type: 'log' },
+                xaxis: {
+                    title: 'Equilibrium Temperature (K)',
+                    type: 'log',
+                    showgrid: true,
+                    gridwidth: 1,
+                    gridcolor: 'rgba(128, 128, 128, 0.2)'
+                },
                 yaxis: {
-                    title: yAxis === 'temp' ? 'Equilibrium Temperature (K)' : 'Planet Mass (Earth masses)',
-                    type: yAxis === 'temp' ? 'log' : 'log'
+                    title: 'Planet Radius (Earth = 1)',
+                    type: 'log',
+                    showgrid: true,
+                    gridwidth: 1,
+                    gridcolor: 'rgba(128, 128, 128, 0.2)'
                 },
                 hovermode: 'closest',
                 showlegend: true,
-                height: 500,
-                margin: { b: 60, l: 70, r: 40, t: 20 },
-                plot_bgcolor: '#fff',
+                height: 600,
+                margin: { b: 60, l: 80, r: 120, t: 20 },
+                plot_bgcolor: 'rgba(15, 23, 42, 0.5)',
                 paper_bgcolor: '#f8f9fa',
+                font: { color: '#333' }
             };
 
             // Add habitable zone rectangle
-            if (yAxis === 'temp') {
-                layout.shapes = [{
-                    type: 'rect',
-                    xref: 'paper',
-                    yref: 'y',
-                    x0: -0.05,
-                    y0: 250,
-                    x1: 1.05,
-                    y1: 350,
-                    fillcolor: '#27ae60',
-                    opacity: 0.1,
-                    line: { color: '#27ae60', width: 2, dash: 'dash' }
-                }];
-            }
+            layout.shapes = [{
+                type: 'rect',
+                xref: 'x',
+                yref: 'y',
+                x0: 250,
+                y0: 0.5,
+                x1: 350,
+                y1: 2,
+                fillcolor: '#3498db',
+                opacity: 0.15,
+                line: { color: '#3498db', width: 3, dash: 'dash' }
+            }];
+
+            // Add annotation for habitable zone
+            layout.annotations = [{
+                x: 300,
+                y: 1.3,
+                text: 'Liquid water<br>possible',
+                showarrow: false,
+                font: { color: '#2ecc71', size: 11 },
+                bgcolor: 'rgba(0, 0, 0, 0.3)',
+                bordercolor: '#2ecc71',
+                borderwidth: 1,
+                borderpad: 4
+            }];
 
             Plotly.newPlot('scatter-plot', traces, layout, { responsive: true });
         }

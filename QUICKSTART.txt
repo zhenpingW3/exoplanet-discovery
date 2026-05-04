@@ -1,0 +1,30 @@
+EXOPLANET VISUALIZATION - QUICK START
+
+How to use:
+1. Open index.html in your web browser
+   - Just double-click the file, or
+   - Open it in Chrome, Firefox, Safari, or Edge
+
+2. Two views to explore:
+   - Habitability Funnel: "How many planets could support life?"
+   - Discovery Deep Dive: "How and why did we find what we found?"
+
+3. Interact:
+   - Click tabs at the top to switch between views
+   - Click funnel levels to see more details
+   - Click planet types to see example planets
+   - Hover for tooltips with additional information
+
+4. What you'll learn:
+   - Only 6 planets are both habitable-temperature AND Earth-sized (0.51%)
+   - Transit method dominates discoveries (96%) - this biases our sample
+   - Hot Jupiters are overrepresented (easy to detect, not representative)
+   - Discovery acceleration: 95% found after 2009
+
+Troubleshooting:
+- Make sure index.html and data.json are in the SAME folder
+- Try a different browser if charts don't load
+- Press F12 to open browser console for error messages
+- Check internet connection (needs to load Plotly.js from CDN)
+
+Data source: NASA Exoplanet Archive (1,174 planets discovered 2002-2025)

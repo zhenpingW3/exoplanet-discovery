@@ -689,41 +689,43 @@
                             name: method,
                             mode: 'markers',
                             marker: {
-                                size: 6,
+                                size: 7,
                                 color: methodColors[method],
-                                opacity: 0.6,
-                                line: { width: 0.5, color: 'rgba(255,255,255,0.5)' }
+                                opacity: 0.65,
+                                line: { width: 0.5, color: 'rgba(255,255,255,0.4)' }
                             },
-                            text: methodPlanets.map(p => `<b>${p.name}</b><br>Star: ${p.star}<br>Radius: ${p.radius.toFixed(2)} R⊕<br>${yAxis === 'temp' ? `Temp: ${p.temp.toFixed(0)} K` : `Mass: ${p.mass.toFixed(1)} M⊕`}<br>Discovery: ${p.year} (${p.method})`),
+                            text: methodPlanets.map(p => `<b>${p.name}</b><br>Star: ${p.star}<br>Radius: ${p.radius.toFixed(2)} R⊕<br>${yAxis === 'temp' ? `Temp: ${p.temp.toFixed(0)} K` : `Mass: ${p.mass.toFixed(1)} M⊕`}<br>Discovery: ${p.year}<br>Method: ${p.method}`),
                             hovertemplate: '%{text}<extra></extra>',
                         });
                     }
                 });
             } else {
                 // Year-based or single group coloring
-                Object.keys(grouped).forEach((groupKey, idx) => {
+                Object.keys(grouped).sort((a, b) => a - b).forEach((groupKey) => {
                     const groupPlanets = grouped[groupKey];
-                    let color;
+                    let color, name;
                     if (colorBy === 'year') {
                         // Color gradient by year
-                        const normalized = (groupKey - 2000) / 25;
-                        color = `rgba(52, 152, 219, ${0.4 + normalized * 0.5})`;
+                        const normalized = (groupKey - 2002) / 23;
+                        color = `rgba(52, 152, 219, ${0.4 + normalized * 0.6})`;
+                        name = `${groupKey}-${groupKey + 1}`;
                     } else {
                         color = '#3498db';
+                        name = 'All Planets';
                     }
 
                     traces.push({
                         x: groupPlanets.map(p => p.radius),
                         y: groupPlanets.map(p => yAxis === 'temp' ? p.temp : p.mass),
-                        name: colorBy === 'year' ? `${groupKey}-${groupKey + 1}` : 'All Planets',
+                        name: name,
                         mode: 'markers',
                         marker: {
-                            size: 6,
+                            size: 7,
                             color: color,
-                            opacity: 0.6,
-                            line: { width: 0.5, color: 'rgba(255,255,255,0.5)' }
+                            opacity: 0.65,
+                            line: { width: 0.5, color: 'rgba(255,255,255,0.4)' }
                         },
-                        text: groupPlanets.map(p => `<b>${p.name}</b><br>Star: ${p.star}<br>Radius: ${p.radius.toFixed(2)} R⊕<br>${yAxis === 'temp' ? `Temp: ${p.temp.toFixed(0)} K` : `Mass: ${p.mass.toFixed(1)} M⊕`}<br>Discovery: ${p.year} (${p.method})`),
+                        text: groupPlanets.map(p => `<b>${p.name}</b><br>Star: ${p.star}<br>Radius: ${p.radius.toFixed(2)} R⊕<br>${yAxis === 'temp' ? `Temp: ${p.temp.toFixed(0)} K` : `Mass: ${p.mass.toFixed(1)} M⊕`}<br>Discovery: ${p.year}<br>Method: ${p.method}`),
                         hovertemplate: '%{text}<extra></extra>',
                     });
                 });
@@ -736,7 +738,7 @@
                 name: 'Earth (reference)',
                 mode: 'markers',
                 marker: {
-                    size: 12,
+                    size: 13,
                     color: '#2ecc71',
                     symbol: 'star',
                     line: { width: 2, color: 'white' }
@@ -747,14 +749,14 @@
             const layout = {
                 title: '',
                 xaxis: {
-                    title: 'Equilibrium Temperature (K)',
+                    title: 'Planet Radius (Earth radii)',
                     type: 'log',
                     showgrid: true,
                     gridwidth: 1,
                     gridcolor: 'rgba(128, 128, 128, 0.2)'
                 },
                 yaxis: {
-                    title: 'Planet Radius (Earth = 1)',
+                    title: yAxis === 'temp' ? 'Equilibrium Temperature (K)' : 'Planet Mass (Earth masses)',
                     type: 'log',
                     showgrid: true,
                     gridwidth: 1,
@@ -769,32 +771,39 @@
                 font: { color: '#333' }
             };
 
-            // Add habitable zone rectangle
-            layout.shapes = [{
-                type: 'rect',
-                xref: 'x',
-                yref: 'y',
-                x0: 250,
-                y0: 0.5,
-                x1: 350,
-                y1: 2,
-                fillcolor: '#3498db',
-                opacity: 0.15,
-                line: { color: '#3498db', width: 3, dash: 'dash' }
-            }];
+            // Add habitable zone rectangle (only when showing temperature)
+            if (yAxis === 'temp') {
+                layout.shapes = [{
+                    type: 'rect',
+                    xref: 'paper',
+                    yref: 'y',
+                    x0: -0.05,
+                    y0: 250,
+                    x1: 1.05,
+                    y1: 350,
+                    fillcolor: '#3498db',
+                    opacity: 0.12,
+                    line: { color: '#3498db', width: 2, dash: 'dash' }
+                }];
 
-            // Add annotation for habitable zone
-            layout.annotations = [{
-                x: 300,
-                y: 1.3,
-                text: 'Liquid water<br>possible',
-                showarrow: false,
-                font: { color: '#2ecc71', size: 11 },
-                bgcolor: 'rgba(0, 0, 0, 0.3)',
-                bordercolor: '#2ecc71',
-                borderwidth: 1,
-                borderpad: 4
-            }];
+                // Add annotation for habitable zone
+                layout.annotations = [{
+                    x: 0.5,
+                    xref: 'paper',
+                    y: 300,
+                    yref: 'y',
+                    text: 'Liquid water<br>possible',
+                    showarrow: false,
+                    font: { color: '#2ecc71', size: 10, family: 'Arial' },
+                    bgcolor: 'rgba(0, 0, 0, 0.4)',
+                    bordercolor: '#2ecc71',
+                    borderwidth: 1,
+                    borderpad: 5
+                }];
+            } else {
+                layout.shapes = [];
+                layout.annotations = [];
+            }
 
             Plotly.newPlot('scatter-plot', traces, layout, { responsive: true });
         }
